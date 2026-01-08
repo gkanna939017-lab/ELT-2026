@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Filter, MapPin, Briefcase, Search, MapPinned, PackageCheck } from 'lucide-react'
 import WorkerCard from '../components/WorkerCard.jsx'
-import { workers } from '../data/mockData.js'
 import MapPreview from '../components/MapPreview.jsx'
+import { fetchWorkers } from '../lib/workersService.js'
+
 
 const categories = ['All', 'Home Services', 'Electrical', 'Technology', 'Freelance', 'Fashion', 'Artisan', 'Construction']
 const locations = ['All', 'Narasaraopet', 'Guntur', 'Chilakaluripet', 'Sattenapalle', 'Macherla', 'Piduguralla']
@@ -20,21 +21,32 @@ export default function BrowseTalent() {
     setSearchTerm(term)
   }, [searchParams])
 
+  const [workersData, setWorkersData] = useState([])
+
+  useEffect(() => {
+    let mounted = true
+    fetchWorkers(searchTerm)
+      .then((data) => mounted && setWorkersData(data))
+      .catch(() => mounted && setWorkersData([]))
+    return () => (mounted = false)
+  }, [searchTerm])
+
   const filteredWorkers = useMemo(() => {
-    return workers.filter((worker) => {
+    return (workersData || []).filter((worker) => {
       const matchesSearch =
         worker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         worker.skill.toLowerCase().includes(searchTerm.toLowerCase()) ||
         worker.location.toLowerCase().includes(searchTerm.toLowerCase())
+      const categories = Array.isArray(worker.categories) ? worker.categories : JSON.parse(worker.categories || '[]')
       const matchCategory =
-        selectedCategory === 'All' || worker.categories.includes(selectedCategory) || worker.skill === selectedCategory
+        selectedCategory === 'All' || categories.includes(selectedCategory) || worker.skill === selectedCategory
       const matchLocation =
         selectedLocation === 'All' ||
         worker.location === selectedLocation ||
         (selectedLocation === 'Nearby' && nearbyLocations.includes(worker.location))
       return matchCategory && matchLocation && matchesSearch
     })
-  }, [selectedCategory, selectedLocation, searchTerm])
+  }, [workersData, selectedCategory, selectedLocation, searchTerm])
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">

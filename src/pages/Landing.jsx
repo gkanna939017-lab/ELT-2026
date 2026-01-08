@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { Users, ShieldCheck, Clock3, TrendingUp, MapPinned, Search } from 'lucide-react'
 import Button from '../components/Button.jsx'
 import MapPreview from '../components/MapPreview.jsx'
-import { workers } from '../data/mockData.js'
+import { useEffect, useState } from 'react'
+import { fetchWorkers } from '../lib/workersService.js'
 
 const features = [
   {
@@ -49,6 +50,13 @@ const heroShowcase = [
 export default function Landing() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
+  const [workersData, setWorkersData] = useState(null)
+
+  useEffect(() => {
+    let mounted = true
+    fetchWorkers().then((data) => mounted && setWorkersData(data)).catch(() => mounted && setWorkersData([]))
+    return () => (mounted = false)
+  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -103,7 +111,7 @@ export default function Landing() {
               <div className="flex items-center gap-2 text-sm font-semibold text-primary-700">
                 <MapPinned size={18} /> Nearby workers (sample view)
               </div>
-              <MapPreview workers={workers.slice(0, 5)} />
+              <MapPreview workers={(workersData || []).slice(0, 5)} />
               <div className="grid gap-3 sm:grid-cols-2">
                 {heroShowcase.map((card) => (
                   <div
