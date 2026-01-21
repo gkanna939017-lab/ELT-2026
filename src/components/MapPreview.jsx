@@ -1,52 +1,42 @@
-import { useMemo } from 'react'
-import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api'
-
 export default function MapPreview({ workers }) {
-  // Load Google Maps using the Vite env variable VITE_GOOGLE_MAPS_KEY
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
-  })
-
-  // Default map center (Guntur region) and small spread for mock coords-to-latlng mapping
-  const center = useMemo(() => ({ lat: 16.3067, lng: 80.4365 }), [])
-
-  // Convert worker.coords (x/y as percentages) to lat/lng within a small box around center
-  const markers = (workers || []).map((w) => {
-    const x = w.coords?.x ?? 50
-    const y = w.coords?.y ?? 50
-    const lat = center.lat + (50 - y) * 0.0012 // tweak to taste
-    const lng = center.lng + (x - 50) * 0.0015
-    return { id: w.id, position: { lat, lng }, name: w.name, avatar: w.avatar }
-  })
-
-  if (loadError) {
-    return (
-      <div className="relative mt-4 h-64 rounded-2xl border border-primary-100 bg-slate-50 shadow-soft flex items-center justify-center">
-        <div className="text-sm text-primary-700">Map failed to load. Check your Google Maps API key.</div>
-      </div>
-    )
-  }
-
-  if (!isLoaded) {
-    return (
-      <div className="relative mt-4 h-64 rounded-2xl border border-primary-100 bg-slate-50 shadow-soft flex items-center justify-center">
-        <div className="text-sm text-primary-700">Loading map…</div>
-      </div>
-    )
-  }
-
+  // Mock map background using a subtle pattern or gradient to simulate a map view
   return (
-    <div className="relative mt-4 h-64 overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-soft">
-      <GoogleMap
-        mapContainerClassName="absolute inset-0"
-        center={center}
-        zoom={12}
-        options={{ streetViewControl: false, mapTypeControl: false }}
-      >
-        {markers.map((m) => (
-          <Marker key={m.id} position={m.position} title={m.name} />
-        ))}
-      </GoogleMap>
+    <div className="relative mt-4 h-64 overflow-hidden rounded-2xl border border-slate-200 bg-[#e5e7eb] shadow-inner">
+      {/* Abstract Map Background */}
+      <div className="absolute inset-0 opacity-40" style={{
+        backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)',
+        backgroundSize: '20px 20px'
+      }}></div>
+
+      {/* Decorative Map Elements (Streets) */}
+      <div className="absolute top-1/2 left-0 h-4 w-full -rotate-6 bg-white/60"></div>
+      <div className="absolute top-0 left-1/3 h-full w-4 rotate-12 bg-white/60"></div>
+
+      {/* Worker Markers */}
+      {(workers || []).map((w, i) => (
+        <div
+          key={w.id}
+          className="absolute flex flex-col items-center group cursor-pointer"
+          style={{
+            top: `${w.coords?.y ?? 50}%`,
+            left: `${w.coords?.x ?? 50}%`,
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md ring-2 ring-primary-500 transition-transform group-hover:-translate-y-2 group-hover:scale-110">
+            {w.avatar ? (
+              <img src={w.avatar} alt={w.name} className="h-full w-full rounded-full object-cover" />
+            ) : (
+              <div className="h-full w-full rounded-full bg-primary-100"></div>
+            )}
+            <div className="absolute -bottom-1 h-3 w-3 rotate-45 bg-white"></div>
+          </div>
+          {/* Tooltip */}
+          <div className="absolute -top-8 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[10px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100">
+            {w.skill}
+          </div>
+        </div>
+      ))}
       <div className="absolute bottom-3 right-3 rounded-full bg-primary-700 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-white shadow">
         Nearby view
       </div>

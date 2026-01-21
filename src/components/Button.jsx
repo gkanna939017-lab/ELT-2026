@@ -7,14 +7,14 @@ export default function Button({
 }) {
   const variants = {
     primary:
-      'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-300',
+      'bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg focus:ring-primary-500',
     secondary:
-      'bg-white text-primary-700 border border-primary-200 hover:border-primary-300 shadow-sm',
+      'bg-white text-slate-700 border border-slate-200 hover:border-primary-300 hover:bg-slate-50 shadow-sm focus:ring-slate-200',
   }
 
   return (
     <Component
-      className={`inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 ${variants[variant]} ${className}`}
       {...props}
     >
       {children}

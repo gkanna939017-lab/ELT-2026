@@ -1,3 +1,4 @@
+
 import { Link, NavLink } from 'react-router-dom'
 import { Sparkles, Menu } from 'lucide-react'
 import { useState } from 'react'
@@ -14,23 +15,22 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur shadow">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
-        <Link to="/" className="flex items-center gap-2 font-bold text-primary-700">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600 shadow-soft">
-            <Sparkles size={20} />
+    <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex items-center gap-2 font-bold text-white transition-colors hover:text-primary-400">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600/20 text-primary-400 ring-1 ring-primary-500/30">
+            <Sparkles size={18} className="fill-current" />
           </div>
-          <span className="text-lg">ELT (Empower Local Talent)</span>
+          <span className="text-xl tracking-tight">ELT</span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `text-sm font-medium transition hover:text-primary-600 ${
-                  isActive ? 'text-primary-600' : 'text-slate-600'
+                `text-sm font-medium transition-colors hover:text-primary-400 ${isActive ? 'text-white' : 'text-slate-400'
                 }`
               }
             >
@@ -39,41 +39,42 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <Button as="a" href="/browse">
+        <div className="hidden md:flex items-center gap-4">
+          <Button as="a" href="/browse" variant="primary">
             Find Workers
           </Button>
         </div>
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 hover:bg-primary-50 md:hidden"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white md:hidden transition-colors"
           aria-label="Toggle navigation"
         >
-          <Menu size={22} />
+          <Menu size={24} />
         </button>
       </div>
 
       {open && (
-        <div className="border-t border-slate-100 bg-white md:hidden">
-          <div className="mx-auto flex max-w-6xl flex-col px-4 py-3">
+        <div className="border-t border-slate-800 bg-slate-900 md:hidden animate-in slide-in-from-top-2 duration-200">
+          <div className="space-y-1 px-4 py-3 pb-4">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
-                  `rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-primary-50 ${
-                    isActive ? 'text-primary-600' : 'text-slate-700'
+                  `block rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-slate-800 hover:text-primary-400 ${isActive ? 'bg-slate-800 text-white' : 'text-slate-400'
                   }`
                 }
               >
                 {item.label}
               </NavLink>
             ))}
-            <Button className="mt-3 w-full" onClick={() => setOpen(false)} as="a" href="/browse">
-              Find Workers
-            </Button>
+            <div className="mt-4 pt-4 border-t border-slate-800">
+              <Button className="w-full" onClick={() => setOpen(false)} as="a" href="/browse">
+                Find Workers
+              </Button>
+            </div>
           </div>
         </div>
       )}

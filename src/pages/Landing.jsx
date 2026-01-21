@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { Users, ShieldCheck, Clock3, TrendingUp, MapPinned, Search } from 'lucide-react'
 import Button from '../components/Button.jsx'
 import MapPreview from '../components/MapPreview.jsx'
-import { useEffect, useState } from 'react'
-import { fetchWorkers } from '../lib/workersService.js'
+import { workers } from '../data/mockData.js'
 
 const features = [
   {
@@ -33,30 +32,23 @@ const heroShowcase = [
   {
     title: 'Electricians',
     image:
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
   },
   {
     title: 'Plumbers',
     image:
-      'https://images.unsplash.com/photo-1582719478161-12c1d1a21c75?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=800&q=80',
   },
   {
     title: 'Carpenters',
     image:
-      'https://images.unsplash.com/photo-1503389152951-9f343605f61e?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1622675363311-ac22f5a94860?auto=format&fit=crop&w=800&q=80',
   },
 ]
 
 export default function Landing() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
-  const [workersData, setWorkersData] = useState(null)
-
-  useEffect(() => {
-    let mounted = true
-    fetchWorkers().then((data) => mounted && setWorkersData(data)).catch(() => mounted && setWorkersData([]))
-    return () => (mounted = false)
-  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -111,20 +103,39 @@ export default function Landing() {
               <div className="flex items-center gap-2 text-sm font-semibold text-primary-700">
                 <MapPinned size={18} /> Nearby workers (sample view)
               </div>
-              <MapPreview workers={(workersData || []).slice(0, 5)} />
+              <MapPreview workers={workers.slice(0, 5)} />
               <div className="grid gap-3 sm:grid-cols-2">
-                {heroShowcase.map((card) => (
-                  <div
-                    key={card.title}
-                    className="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50/80 shadow-soft"
-                  >
-                    <img src={card.image} alt={card.title} className="h-28 w-full object-cover" loading="lazy" />
-                    <div className="px-4 py-3">
-                      <p className="text-sm font-semibold text-slate-800">{card.title}</p>
-                      <p className="text-xs text-slate-600">Trusted local professionals</p>
-                    </div>
-                  </div>
-                ))}
+                {heroShowcase.map((card) => {
+                  // Simple singularization for the search term
+                  const searchTerm = card.title.slice(0, -1) // Electricians -> Electrician
+                  return (
+                    <Link
+                      key={card.title}
+                      to={`/browse?search=${encodeURIComponent(searchTerm)}`}
+                      className="group block overflow-hidden rounded-2xl border border-slate-100 bg-slate-50/80 shadow-soft transition hover:border-primary-200 hover:shadow-lg"
+                    >
+                      <div className="overflow-hidden">
+                        <img
+                          src={card.image}
+                          alt={card.title}
+                          className="h-28 w-full object-cover transition duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="px-4 py-3">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-semibold text-slate-800 transition group-hover:text-primary-600">
+                            {card.title}
+                          </p>
+                          <span className="text-xs font-medium text-primary-600 opacity-0 transition group-hover:opacity-100">
+                            View →
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600">Trusted local professionals</p>
+                      </div>
+                    </Link>
+                  )
+                })}
               </div>
               <div className="rounded-2xl bg-primary-600 px-4 py-3 text-white shadow-soft">
                 <p className="text-sm font-semibold">Training Highlight</p>
