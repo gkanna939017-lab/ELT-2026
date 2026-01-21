@@ -17,8 +17,14 @@ export default function WorkerCard({ worker }) {
           </div>
         )}
         <div>
-          <h3 className="text-base font-semibold text-slate-900">{worker.name}</h3>
-          <p className="text-sm text-primary-600">{worker.skill}</p>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-base font-semibold text-slate-900">{worker.name}</h3>
+            {/* Verified Badge */}
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-600 ring-1 ring-blue-500/20" title="Background Checked">
+              ✓ Verified
+            </span>
+          </div>
+          <p className="text-sm text-primary-600 font-medium">{worker.skill}</p>
         </div>
       </div>
 

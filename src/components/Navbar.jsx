@@ -1,21 +1,35 @@
 
 import { Link, NavLink } from 'react-router-dom'
 import { Sparkles, Menu } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from './Button.jsx'
 
 const navItems = [
   { to: '/', label: 'Home' },
   { to: '/browse', label: 'Browse Talent' },
   { to: '/training', label: 'Training Hub' },
+  { to: '/enterprise', label: 'For Business' },
   { to: '/register', label: 'Register' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
+    <header
+      className={`fixed top-0 z-50 w-full border-b transition-all duration-300 ${scrolled
+        ? 'border-slate-800 bg-slate-900/95 shadow-lg backdrop-blur-md'
+        : 'border-transparent bg-transparent py-2'
+        }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2 font-bold text-white transition-colors hover:text-primary-400">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600/20 text-primary-400 ring-1 ring-primary-500/30">
