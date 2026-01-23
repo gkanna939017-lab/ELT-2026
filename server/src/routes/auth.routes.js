@@ -8,21 +8,29 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, location, phoneNumber } = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+        const existingUser = await db.user.findUnique({
+            where: { email }
+        });
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const insert = db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)');
-        const info = insert.run(name, email, hashedPassword, role || 'user');
-
-        const user = { id: info.lastInsertRowid, name, email, role: role || 'user' };
+        const user = await db.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword,
+                role: role || 'user',
+                location,
+                phoneNumber
+            }
+        });
 
         const token = jwt.sign(
             { id: user.id, role: user.role },
@@ -30,7 +38,7 @@ router.post('/register', async (req, res) => {
             { expiresIn: '1d' }
         );
 
-        res.status(201).json({ token, user });
+        res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, location: user.location, phoneNumber: user.phoneNumber } });
     } catch (error) {
         console.error("Registration Error:", error);
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -41,7 +49,9 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+        const user = await db.user.findUnique({
+            where: { email }
+        });
 
         if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 

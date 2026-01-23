@@ -14,7 +14,26 @@ const navItems = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [user, setUser] = useState(null)
   const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleStorage = () => {
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) setUser(JSON.parse(storedUser))
+      else setUser(null)
+    }
+    window.addEventListener('storage', handleStorage)
+    handleStorage() // Initial check
+    return () => window.removeEventListener('storage', handleStorage)
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    setUser(null)
+    window.dispatchEvent(new Event('storage'))
+  }
 
   // Handle scroll effect
   useEffect(() => {
@@ -54,9 +73,19 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button as="a" href="/browse" variant="primary">
-            Find Workers
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-slate-400">Hi, {user.name}</span>
+              <Button onClick={handleLogout} variant="outline" className="border-white/20 text-white hover:bg-white/10">Logout</Button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Log in</Link>
+              <Button as={Link} to="/register-user" variant="primary">
+                Sign Up
+              </Button>
+            </>
+          )}
         </div>
 
         <button
@@ -84,10 +113,17 @@ export default function Navbar() {
                 {item.label}
               </NavLink>
             ))}
-            <div className="mt-4 pt-4 border-t border-slate-800">
-              <Button className="w-full" onClick={() => setOpen(false)} as="a" href="/browse">
-                Find Workers
-              </Button>
+            <div className="mt-4 pt-4 border-t border-slate-800 flex flex-col gap-3">
+              {user ? (
+                <Button className="w-full" onClick={() => { handleLogout(); setOpen(false); }}>Logout</Button>
+              ) : (
+                <>
+                  <Link to="/login" onClick={() => setOpen(false)} className="block text-center text-slate-300 hover:text-white">Log in</Link>
+                  <Button className="w-full" onClick={() => setOpen(false)} as={Link} to="/register-user">
+                    Sign Up
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

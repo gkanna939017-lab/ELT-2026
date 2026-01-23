@@ -21,5 +21,7 @@ export const loginUser = (credentials) => api.post('/auth/login', credentials);
 export const getMyProfile = () => api.get('/profile/me');
 export const updateProfile = (profileData) => api.post('/profile/update', profileData);
 export const searchProfiles = (query) => api.get(`/profile/search?query=${query}`);
+export const createBooking = (bookingData) => api.post('/booking/create', bookingData);
+export const getMyBookings = () => api.get('/booking/my-bookings');
 
 export default api;

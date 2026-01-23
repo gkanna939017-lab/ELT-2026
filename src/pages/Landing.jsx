@@ -49,6 +49,8 @@ const heroShowcase = [
 export default function Landing() {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -88,19 +90,54 @@ export default function Landing() {
             </p>
 
             {/* Glassmorphism Search Bar */}
-            <form onSubmit={handleSearch} className="mx-auto mt-10 flex max-w-2xl flex-col items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-2 shadow-2xl backdrop-blur-xl transition-all hover:bg-white/10 sm:flex-row sm:p-2.5">
-              <div className="relative flex-1 w-full sm:w-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="What service do you need today?"
-                  className="w-full rounded-2xl bg-transparent px-12 py-4 text-white placeholder-slate-400 outline-none ring-0 placeholder:text-slate-400"
-                />
+            <form onSubmit={handleSearch} className="relative z-50 mx-auto mt-10 max-w-2xl">
+              <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-2 shadow-2xl backdrop-blur-xl transition-all hover:bg-white/10 sm:flex-row sm:p-2.5">
+                <div className="relative flex-1 w-full sm:w-auto">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                  <input
+                    value={searchTerm}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSearchTerm(val)
+                      if (val.length > 0) {
+                        const all = ['Electrician', 'Plumber', 'Carpenter', 'Painter', 'Mechanic', 'Tailor', 'Pottery', 'Farming', 'AC Repair']
+                        setSuggestions(all.filter(s => s.toLowerCase().includes(val.toLowerCase())).slice(0, 5))
+                        setShowSuggestions(true)
+                      } else {
+                        setShowSuggestions(false)
+                      }
+                    }}
+                    onFocus={() => searchTerm && setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} // Delay to allow click
+                    placeholder="What service do you need today?"
+                    className="w-full rounded-2xl bg-transparent px-12 py-4 text-white placeholder-slate-400 outline-none ring-0 placeholder:text-slate-400"
+                  />
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className="absolute top-full mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-slate-800/95 p-1 shadow-xl backdrop-blur-md">
+                      {suggestions.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault() // Prevent focus loss
+                            setSearchTerm(s)
+                            setShowSuggestions(false)
+                            navigate(`/browse?search=${encodeURIComponent(s)}`)
+                          }}
+                          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium text-slate-200 hover:bg-white/10"
+                        >
+                          <Search size={14} className="text-slate-500" />
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <Button type="submit" size="xl" className="w-full rounded-2xl bg-primary-600 py-4 text-lg font-bold shadow-lg shadow-primary-900/20 hover:bg-primary-500 sm:w-auto sm:px-10">
+                  Search
+                </Button>
               </div>
-              <Button type="submit" size="xl" className="w-full rounded-2xl bg-primary-600 py-4 text-lg font-bold shadow-lg shadow-primary-900/20 hover:bg-primary-500 sm:w-auto sm:px-10">
-                Search
-              </Button>
             </form>
 
             {/* Quick Categories */}

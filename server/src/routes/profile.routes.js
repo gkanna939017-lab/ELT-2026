@@ -24,12 +24,13 @@ const verifyToken = (req, res, next) => {
 // Get My Profile
 router.get('/me', verifyToken, async (req, res) => {
     try {
-        const user = db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(req.userId);
+        const user = await db.user.findUnique({
+            where: { id: req.userId },
+            select: { id: true, name: true, email: true, role: true, workerProfile: true }
+        });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const workerProfile = db.prepare('SELECT * FROM worker_profiles WHERE user_id = ?').get(req.userId);
-
-        res.json({ ...user, workerProfile });
+        res.json(user);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -39,16 +40,32 @@ router.get('/me', verifyToken, async (req, res) => {
 router.get('/search', async (req, res) => {
     const { query } = req.query;
     try {
-        if (!query) return res.json([]);
+        if (!query || query.trim() === '') {
+            // Return all workers if query is empty
+            const profiles = await db.workerProfile.findMany({
+                include: {
+                    user: {
+                        select: { name: true, email: true }
+                    }
+                }
+            });
+            return res.json(profiles);
+        }
 
-        const sql = `
-            SELECT wp.*, u.name, u.email 
-            FROM worker_profiles wp
-            JOIN users u ON wp.user_id = u.id
-            WHERE wp.category LIKE ? OR wp.location LIKE ? OR wp.experience LIKE ?
-        `;
-        const searchTerm = `%${query}%`;
-        const profiles = db.prepare(sql).all(searchTerm, searchTerm, searchTerm);
+        const profiles = await db.workerProfile.findMany({
+            where: {
+                OR: [
+                    { category: { contains: query, mode: 'insensitive' } },
+                    { location: { contains: query, mode: 'insensitive' } },
+                    { experience: { contains: query, mode: 'insensitive' } }
+                ]
+            },
+            include: {
+                user: {
+                    select: { name: true, email: true }
+                }
+            }
+        });
 
         res.json(profiles);
     } catch (error) {
@@ -59,29 +76,33 @@ router.get('/search', async (req, res) => {
 
 // Update/Create Worker Profile
 router.post('/update', verifyToken, async (req, res) => {
-    const { category, location, experience, bio } = req.body;
+    const { category, location, experience, bio, avatar } = req.body;
     try {
-        const existing = db.prepare('SELECT id FROM worker_profiles WHERE user_id = ?').get(req.userId);
-
-        if (existing) {
-            db.prepare(`
-                UPDATE worker_profiles 
-                SET category = ?, location = ?, experience = ?, bio = ?
-                WHERE user_id = ?
-            `).run(category, location, experience, bio, req.userId);
-        } else {
-            db.prepare(`
-                INSERT INTO worker_profiles (user_id, category, location, experience, bio)
-                VALUES (?, ?, ?, ?, ?)
-            `).run(req.userId, category, location, experience, bio);
+        const profile = await db.workerProfile.upsert({
+            where: { userId: req.userId },
+            update: {
+                category,
+                location,
+                experience,
+                bio,
+                avatar // Found error in original: avatar was missing
+            },
+            create: {
+                userId: req.userId,
+                category,
+                location,
+                experience,
+                bio,
+                avatar
+            }
         }
+        });
 
-        const profile = db.prepare('SELECT * FROM worker_profiles WHERE user_id = ?').get(req.userId);
-        res.json(profile);
+res.json(profile);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error', error: error.message });
-    }
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+}
 });
 
 export default router;

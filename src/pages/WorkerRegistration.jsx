@@ -1,19 +1,61 @@
-import { useState } from 'react'
-import { CheckCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { CheckCircle, Loader2 } from 'lucide-react'
 import Button from '../components/Button.jsx'
+import { updateProfile, getMyProfile } from '../services/api.js'
+import { useNavigate } from 'react-router-dom'
 
 export default function WorkerRegistration() {
-  const [form, setForm] = useState({ name: '', skill: '', experience: '' })
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ category: '', location: '', experience: '', bio: '' })
+  const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token')
+    if (!token) {
+      navigate('/login')
+      return
+    }
+    // Try to load existing profile
+    const fetchProfile = async () => {
+      try {
+        const { data } = await getMyProfile()
+        if (data.workerProfile) {
+          setForm({
+            category: data.workerProfile.category,
+            location: data.workerProfile.location,
+            experience: data.workerProfile.experience,
+            bio: data.workerProfile.bio
+          })
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchProfile()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setLoading(true)
+    setMessage('')
+    try {
+      await updateProfile(form)
+      setSubmitted(true)
+      setMessage('Profile updated successfully!')
+      setTimeout(() => navigate('/browse'), 2000)
+    } catch (err) {
+      setMessage('Failed to update profile. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -25,38 +67,40 @@ export default function WorkerRegistration() {
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-primary-600">Join ELT</p>
-            <h1 className="text-2xl font-bold text-slate-900">Worker Registration</h1>
+            <h1 className="text-2xl font-bold text-slate-900">Worker Profile</h1>
             <p className="text-sm text-slate-600">Share your skills and start receiving opportunities.</p>
           </div>
         </div>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          {message && <div className={`p-3 rounded-lg text-sm ${submitted ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>{message}</div>}
+
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-800" htmlFor="name">
-              Full Name
+            <label className="text-sm font-semibold text-slate-800" htmlFor="category">
+              Primary Skill / Category
             </label>
             <input
-              id="name"
-              name="name"
-              value={form.name}
+              id="category"
+              name="category"
+              value={form.category}
               onChange={handleChange}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-primary-300 focus:bg-white focus:ring-2 focus:ring-primary-100"
-              placeholder="Enter your full name"
+              placeholder="e.g., Electrician, Web Developer"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-800" htmlFor="skill">
-              Primary Skill
+            <label className="text-sm font-semibold text-slate-800" htmlFor="location">
+              Location / City
             </label>
             <input
-              id="skill"
-              name="skill"
-              value={form.skill}
+              id="location"
+              name="location"
+              value={form.location}
               onChange={handleChange}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-primary-300 focus:bg-white focus:ring-2 focus:ring-primary-100"
-              placeholder="e.g., Electrician, Web Developer"
+              placeholder="e.g., Narasaraopet"
               required
             />
           </div>
@@ -68,26 +112,33 @@ export default function WorkerRegistration() {
             <input
               id="experience"
               name="experience"
-              type="number"
-              min="0"
+              type="text"
               value={form.experience}
               onChange={handleChange}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-primary-300 focus:bg-white focus:ring-2 focus:ring-primary-100"
-              placeholder="e.g., 3"
+              placeholder="e.g., 3 years"
               required
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            Submit Registration
-          </Button>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-800" htmlFor="bio">
+              Short Bio
+            </label>
+            <textarea
+              id="bio"
+              name="bio"
+              value={form.bio}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-primary-300 focus:bg-white focus:ring-2 focus:ring-primary-100"
+              placeholder="Describe your services..."
+              rows={3}
+            />
+          </div>
 
-          {submitted && (
-            <div className="flex items-center gap-2 rounded-xl bg-primary-50 px-4 py-3 text-sm text-primary-700">
-              <CheckCircle size={18} />
-              Registration received! We will review your profile shortly.
-            </div>
-          )}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : 'Save Profile'}
+          </Button>
         </form>
       </div>
     </div>

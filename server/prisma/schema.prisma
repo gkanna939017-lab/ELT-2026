@@ -3,30 +3,47 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   @default("user") // "user", "worker", "admin"
-  createdAt DateTime @default(now())
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String         // In production we'd use this
+  name          String
+  role          String         @default("user") // "user" or "worker"
+  location      String?
+  phoneNumber   String?
+  createdAt     DateTime       @default(now())
   
   workerProfile WorkerProfile?
+  bookings      Booking[]
 }
 
 model WorkerProfile {
-  id          Int     @id @default(autoincrement())
-  userId      Int     @unique
-  user        User    @relation(fields: [userId], references: [id])
-  category    String  // Electrician, Plumber, etc.
-  location    String
-  experience  String?
-  bio         String?
-  isVerified  Boolean @default(false)
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id])
+  category   String
+  location   String
+  experience String?
+  bio        String?
+  avatar     String?
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
   
-  createdAt   DateTime @default(now())
+  services   Booking[] // Relation to bookings received
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  user        User          @relation(fields: [userId], references: [id])
+  workerId    Int
+  worker      WorkerProfile @relation(fields: [workerId], references: [id])
+  date        DateTime
+  description String
+  status      String        @default("PENDING") // PENDING, CONFIRMED, COMPLETED
+  createdAt   DateTime      @default(now())
 }

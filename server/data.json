@@ -1,0 +1,166 @@
+{
+  "User": [
+    {
+      "id": 1,
+      "email": "raju.electric@gmail.com",
+      "password": "hashed_secret",
+      "name": "Raju Kumar",
+      "role": "worker",
+      "location": "Narasaraopet",
+      "phoneNumber": "9876543210",
+      "createdAt": "2026-01-20T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "email": "priya.designs@gmail.com",
+      "password": "hashed_secret",
+      "name": "Priya Sharma",
+      "role": "worker",
+      "location": "Guntur",
+      "phoneNumber": "9876543211",
+      "createdAt": "2026-01-20T10:05:00.000Z"
+    },
+    {
+      "id": 3,
+      "email": "shiva.plumber@gmail.com",
+      "password": "hashed_secret",
+      "name": "Shiva Reddy",
+      "role": "worker",
+      "location": "Sattenapalle",
+      "phoneNumber": "9876543212",
+      "createdAt": "2026-01-20T10:10:00.000Z"
+    },
+    {
+      "id": 4,
+      "email": "laxmi.pottery@gmail.com",
+      "password": "hashed_secret",
+      "name": "Laxmi Devi",
+      "role": "worker",
+      "location": "Chilakaluripet",
+      "phoneNumber": "9876543213",
+      "createdAt": "2026-01-20T10:15:00.000Z"
+    },
+    {
+      "id": 5,
+      "email": "abdul.ac@gmail.com",
+      "password": "hashed_secret",
+      "name": "Abdul Kareem",
+      "role": "worker",
+      "location": "Guntur",
+      "phoneNumber": "9876543214",
+      "createdAt": "2026-01-20T10:20:00.000Z"
+    },
+    {
+      "id": 6,
+      "email": "mohan.carpenter@gmail.com",
+      "password": "hashed_secret",
+      "name": "Mohan Rao",
+      "role": "worker",
+      "location": "Piduguralla",
+      "phoneNumber": "9876543215",
+      "createdAt": "2026-01-20T10:25:00.000Z"
+    },
+    {
+      "id": 7,
+      "email": "sunita.tailor@gmail.com",
+      "password": "hashed_secret",
+      "name": "Sunita Patil",
+      "role": "worker",
+      "location": "Narasaraopet",
+      "phoneNumber": "9876543220",
+      "createdAt": "2026-01-22T10:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "email": "vijay.mechanic@gmail.com",
+      "password": "hashed_secret",
+      "name": "Vijay Krishna",
+      "role": "worker",
+      "location": "Macherla",
+      "phoneNumber": "9876543221",
+      "createdAt": "2026-01-22T11:00:00.000Z"
+    }
+  ],
+  "WorkerProfile": [
+    {
+      "id": 1,
+      "userId": 1,
+      "category": "Electrician",
+      "location": "Narasaraopet",
+      "experience": "8 years",
+      "bio": "Expert in house wiring, inverter installation, and safety checks. Available 24/7 for emergencies.",
+      "isVerified": true,
+      "createdAt": "2026-01-20T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "category": "Tailor",
+      "location": "Guntur",
+      "experience": "5 years",
+      "bio": "Specialist in ladies blouses, bridal wear, and alterations. Home pickup available.",
+      "isVerified": true,
+      "createdAt": "2026-01-20T10:05:00.000Z"
+    },
+    {
+      "id": 3,
+      "userId": 3,
+      "category": "Plumber",
+      "location": "Sattenapalle",
+      "experience": "12 years",
+      "bio": "Reliable service for leakages, pipe fitting, and bathroom renovations.",
+      "isVerified": true,
+      "createdAt": "2026-01-20T10:10:00.000Z"
+    },
+    {
+      "id": 4,
+      "userId": 4,
+      "category": "Pottery",
+      "location": "Chilakaluripet",
+      "experience": "15 years",
+      "bio": "Traditional clay pots, decorative items, and custom orders.",
+      "isVerified": false,
+      "createdAt": "2026-01-20T10:15:00.000Z"
+    },
+    {
+      "id": 5,
+      "userId": 5,
+      "category": "AC Repair",
+      "location": "Guntur",
+      "experience": "6 years",
+      "bio": "Certified technician for Split and Window ACs. Gas filling and deep cleaning.",
+      "isVerified": true,
+      "createdAt": "2026-01-20T10:20:00.000Z"
+    },
+    {
+      "id": 6,
+      "userId": 6,
+      "category": "Carpenter",
+      "location": "Piduguralla",
+      "experience": "10 years",
+      "bio": "Custom furniture making, door repairs, and modular kitchen work.",
+      "isVerified": true,
+      "createdAt": "2026-01-20T10:25:00.000Z"
+    },
+    {
+      "id": 7,
+      "userId": 7,
+      "category": "Tailor",
+      "location": "Narasaraopet",
+      "experience": "4 years",
+      "bio": "Affordable stitching for school uniforms and daily wear.",
+      "isVerified": false,
+      "createdAt": "2026-01-22T10:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "userId": 8,
+      "category": "Mechanic",
+      "location": "Macherla",
+      "experience": "9 years",
+      "bio": "Two-wheeler specialist. Engine work, oil change, and breakdown assistance.",
+      "isVerified": true,
+      "createdAt": "2026-01-22T11:00:00.000Z"
+    }
+  ]
+}

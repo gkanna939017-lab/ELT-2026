@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { MapPin, Briefcase, Star, Phone } from 'lucide-react'
+import BookingModal from './BookingModal.jsx'
 
 export default function WorkerCard({ worker }) {
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
   return (
     <div className="group flex flex-col rounded-2xl border border-slate-100 bg-white p-4 shadow-soft transition hover:-translate-y-1 hover:shadow-lg">
       <div className="flex items-center gap-3">
@@ -50,14 +53,28 @@ export default function WorkerCard({ worker }) {
         ))}
       </div>
 
-      {worker.phone && (
-        <a
-          href={`tel:${worker.phone}`}
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-2 text-xs font-semibold text-primary-700 transition hover:bg-primary-100"
+      <div className="mt-4 flex gap-3">
+        {worker.phone && (
+          <a
+            href={`tel:${worker.phone}`}
+            className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+          >
+            <Phone size={16} /> Call
+          </a>
+        )}
+        <button
+          onClick={() => setIsBookingOpen(true)}
+          className="flex-[2] inline-flex justify-center items-center gap-2 rounded-xl bg-primary-600 px-3 py-2 text-sm font-bold text-white shadow-lg shadow-primary-900/20 transition hover:bg-primary-700 hover:-translate-y-0.5"
         >
-          <Phone size={14} /> {worker.phone}
-        </a>
-      )}
+          Book Now
+        </button>
+      </div>
+
+      <BookingModal
+        worker={worker}
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+      />
     </div>
   )
 }

@@ -1,7 +1,15 @@
+import { useState } from 'react'
 import { Clock3, GraduationCap } from 'lucide-react'
 import Button from './Button.jsx'
 
 export default function CourseCard({ course }) {
+  const [enrolled, setEnrolled] = useState(false)
+
+  const handleEnroll = () => {
+    // Mock enrollment logic
+    setEnrolled(true)
+    alert(`Successfully enrolled in ${course.title}!`)
+  }
   return (
     <div className="flex flex-col rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1 hover:shadow-lg">
       <div className="flex items-start gap-3">
@@ -24,8 +32,13 @@ export default function CourseCard({ course }) {
       </div>
 
       <div className="mt-5">
-        <Button className="w-full" variant="primary">
-          Enroll
+        <Button
+          className={`w-full transition-colors ${enrolled ? 'bg-green-600 hover:bg-green-700' : ''}`}
+          variant="primary"
+          onClick={handleEnroll}
+          disabled={enrolled}
+        >
+          {enrolled ? 'Enrolled Successfully' : 'Enroll Now'}
         </Button>
       </div>
     </div>

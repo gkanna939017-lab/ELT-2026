@@ -1,40 +1,64 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Filter, MapPin, Briefcase, Search, MapPinned, PackageCheck } from 'lucide-react'
+import { Filter, MapPin, Briefcase, Search, MapPinned, PackageCheck, Loader2 } from 'lucide-react'
 import WorkerCard from '../components/WorkerCard.jsx'
-import { workers } from '../data/mockData.js'
 import MapPreview from '../components/MapPreview.jsx'
+import { searchProfiles } from '../services/api.js'
 
 const categories = ['All', 'Home Services', 'Electrical', 'Technology', 'Freelance', 'Fashion', 'Artisan', 'Construction']
 const locations = ['All', 'Narasaraopet', 'Guntur', 'Chilakaluripet', 'Sattenapalle', 'Macherla', 'Piduguralla']
-const nearbyLocations = ['Narasaraopet', 'Guntur', 'Chilakaluripet', 'Sattenapalle', 'Macherla', 'Piduguralla']
 
 export default function BrowseTalent() {
   const [searchParams] = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedLocation, setSelectedLocation] = useState('All')
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') || '')
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
+  const [workers, setWorkers] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  // Fetch workers from backend when searchTerm changes
   useEffect(() => {
-    const term = searchParams.get('search') || ''
-    setSearchTerm(term)
-  }, [searchParams])
+    const fetchWorkers = async () => {
+      setLoading(true)
+      try {
+        const query = searchTerm || ''
+        const { data } = await searchProfiles(query)
+        // Transform backend data to match WorkerCard props if different
+        // Backend returns { id, category, location, experience, bio, user: { name, email }, is_verified }
+        const mapped = data.map(p => ({
+          id: p.id,
+          name: p.user?.name || 'Unknown',
+          role: p.category,
+          location: p.location,
+          rating: 5.0, // Default for now
+          verified: !!p.is_verified,
+          skill: p.category, // using category as skill
+          experience: p.experience || 'N/A',
+          categories: [p.category]
+        }))
+        setWorkers(mapped)
+      } catch (error) {
+        console.error("Failed to fetch workers", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchWorkers()
+  }, [searchTerm])
 
-  const filteredWorkers = useMemo(() => {
-    return workers.filter((worker) => {
-      const matchesSearch =
-        worker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        worker.skill.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        worker.location.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchCategory =
-        selectedCategory === 'All' || worker.categories.includes(selectedCategory) || worker.skill === selectedCategory
-      const matchLocation =
-        selectedLocation === 'All' ||
-        worker.location === selectedLocation ||
-        (selectedLocation === 'Nearby' && nearbyLocations.includes(worker.location))
-      return matchCategory && matchLocation && matchesSearch
-    })
-  }, [selectedCategory, selectedLocation, searchTerm])
+  // Client-side filtering for category/location (since backend search is basic text match)
+  const filteredWorkers = workers.filter((worker) => {
+    const matchCategory =
+      selectedCategory === 'All' || worker.categories.includes(selectedCategory) || worker.skill === selectedCategory
+    const matchLocation =
+      selectedLocation === 'All' ||
+      worker.location === selectedLocation ||
+      (selectedLocation === 'Nearby' && ['Narasaraopet', 'Guntur'].includes(worker.location)) // Mock nearby logic
+    return matchCategory && matchLocation
+  })
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
@@ -57,20 +81,52 @@ export default function BrowseTalent() {
           <div className="relative">
             <input
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value
+                setSearchTerm(val)
+                if (val.length > 0) {
+                  const all = ['Electrician', 'Plumber', 'Carpenter', 'Painter', 'Mechanic', 'Tailor', 'Pottery', 'Farming', 'AC Repair']
+                  setSuggestions(all.filter(s => s.toLowerCase().includes(val.toLowerCase())).slice(0, 5))
+                  setShowSuggestions(true)
+                } else {
+                  setShowSuggestions(false)
+                }
+              }}
+              onFocus={() => searchTerm && setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-primary-300 focus:bg-white focus:ring-2 focus:ring-primary-100"
               placeholder="Search name, skill, or location"
             />
             <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+
+            {/* Sidebar Suggestions Dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-xl border border-slate-100 bg-white p-1 shadow-lg">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      setSearchTerm(s)
+                      setShowSuggestions(false)
+                    }}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    <Search size={14} className="text-slate-400" />
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <button
             onClick={() => setSelectedLocation('Nearby')}
-            className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition ${
-              selectedLocation === 'Nearby'
-                ? 'bg-primary-600 text-white shadow-soft'
-                : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
-            }`}
+            className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition ${selectedLocation === 'Nearby'
+              ? 'bg-primary-600 text-white shadow-soft'
+              : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+              }`}
           >
             Near me (Narasaraopet area)
           </button>
@@ -84,11 +140,10 @@ export default function BrowseTalent() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                    selectedCategory === cat
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-primary-50 hover:text-primary-700'
-                  }`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition ${selectedCategory === cat
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-slate-100 text-slate-700 hover:bg-primary-50 hover:text-primary-700'
+                    }`}
                 >
                   {cat}
                 </button>
@@ -105,11 +160,10 @@ export default function BrowseTalent() {
                 <button
                   key={loc}
                   onClick={() => setSelectedLocation(loc)}
-                  className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                    selectedLocation === loc
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-primary-50 hover:text-primary-700'
-                  }`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition ${selectedLocation === loc
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-slate-100 text-slate-700 hover:bg-primary-50 hover:text-primary-700'
+                    }`}
                 >
                   {loc}
                 </button>
@@ -119,13 +173,19 @@ export default function BrowseTalent() {
         </aside>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredWorkers.map((worker) => (
-            <WorkerCard key={worker.id} worker={worker} />
-          ))}
-          {filteredWorkers.length === 0 && (
-            <div className="col-span-full rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
-              No workers found. Try another filter.
-            </div>
+          {loading ? (
+            <div className="col-span-full flex justify-center py-20"><Loader2 className="animate-spin text-primary-500" size={32} /></div>
+          ) : (
+            <>
+              {filteredWorkers.map((worker) => (
+                <WorkerCard key={worker.id} worker={worker} />
+              ))}
+              {filteredWorkers.length === 0 && (
+                <div className="col-span-full rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
+                  No workers found matching "{searchTerm}". Try a broader term.
+                </div>
+              )}
+            </>
           )}
         </section>
       </div>
