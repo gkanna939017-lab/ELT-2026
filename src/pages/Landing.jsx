@@ -185,19 +185,19 @@ export default function Landing() {
             {[
               {
                 quote: "ELT helped me fill my schedule completely. The payments are secure, and clients trust my verified profile.",
-                author: "Raju K.",
+                author: "Raju Kumar",
                 role: "Certified Electrician",
                 image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80"
               },
               {
                 quote: "I found a reliable plumber for my renovation in minutes. The tracking feature gave me total peace of mind.",
-                author: "Sarah J.",
-                role: "Homeowner",
+                author: "Priya Sharma",
+                role: "Homeowner, Hyderabad",
                 image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80"
               },
               {
                 quote: "The solar installation course changed my career. I went from odd jobs to a full-time specialist.",
-                author: "Anita R.",
+                author: "Anita Rao",
                 role: "Solar Technician",
                 image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80"
               }
