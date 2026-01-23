@@ -79,6 +79,16 @@
       "location": "Macherla",
       "phoneNumber": "9876543221",
       "createdAt": "2026-01-22T11:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "name": "Test Node",
+      "email": "testnode@example.com",
+      "password": "$2a$10$YBspLtNh632BKGF.fPuEYOiUbFfl4waJZ25X6.3miEDN5jsx0GUgi",
+      "role": "user",
+      "location": "Test Loc",
+      "phoneNumber": "9999999999",
+      "createdAt": "2026-01-23T15:16:39.669Z"
     }
   ],
   "WorkerProfile": [

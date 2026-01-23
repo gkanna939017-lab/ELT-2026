@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
 // ----------------------------------------------------------------------
 // MODE 1: CLOUD DATABASE (PostgreSQL using Prisma)
@@ -11,7 +11,7 @@ let db;
 
 if (process.env.DATABASE_URL) {
     console.log("🔌 Connected to Cloud Database (PostgreSQL)");
-    db = new PrismaClient();
+    // db = new PrismaClient();
 }
 
 // ----------------------------------------------------------------------

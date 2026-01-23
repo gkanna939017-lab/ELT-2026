@@ -95,14 +95,13 @@ router.post('/update', verifyToken, async (req, res) => {
                 bio,
                 avatar
             }
-        }
         });
 
-res.json(profile);
+        res.json(profile);
     } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error', error: error.message });
-}
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
 });
 
 export default router;
