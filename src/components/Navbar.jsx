@@ -20,7 +20,15 @@ export default function Navbar() {
   useEffect(() => {
     const handleStorage = () => {
       const storedUser = localStorage.getItem('user')
-      if (storedUser) setUser(JSON.parse(storedUser))
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser))
+        } catch (e) {
+          console.error("Invalid user data", e)
+          localStorage.removeItem('user')
+          setUser(null)
+        }
+      }
       else setUser(null)
     }
     window.addEventListener('storage', handleStorage)
@@ -80,9 +88,8 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link to="/login" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Log in</Link>
-              <Button as={Link} to="/register-user" variant="primary">
-                Sign Up
+              <Button as={Link} to="/register" variant="primary">
+                Join as Professional
               </Button>
             </>
           )}
@@ -118,9 +125,8 @@ export default function Navbar() {
                 <Button className="w-full" onClick={() => { handleLogout(); setOpen(false); }}>Logout</Button>
               ) : (
                 <>
-                  <Link to="/login" onClick={() => setOpen(false)} className="block text-center text-slate-300 hover:text-white">Log in</Link>
-                  <Button className="w-full" onClick={() => setOpen(false)} as={Link} to="/register-user">
-                    Sign Up
+                  <Button className="w-full" onClick={() => setOpen(false)} as={Link} to="/register">
+                    Join as Professional
                   </Button>
                 </>
               )}

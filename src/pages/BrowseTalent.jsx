@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Filter, MapPin, Briefcase, Search, MapPinned, PackageCheck, Loader2 } from 'lucide-react'
 import WorkerCard from '../components/WorkerCard.jsx'
 import MapPreview from '../components/MapPreview.jsx'
+import BookingModal from '../components/BookingModal.jsx'
 import { searchProfiles } from '../services/api.js'
 
 const categories = ['All', 'Home Services', 'Electrical', 'Technology', 'Freelance', 'Fashion', 'Artisan', 'Construction']
@@ -18,6 +19,9 @@ export default function BrowseTalent() {
 
   const [workers, setWorkers] = useState([])
   const [loading, setLoading] = useState(false)
+
+  // Booking Modal State (Fixed: Single instance at parent level)
+  const [bookingWorker, setBookingWorker] = useState(null)
 
   // Fetch workers from backend when searchTerm changes
   useEffect(() => {
@@ -37,7 +41,8 @@ export default function BrowseTalent() {
           verified: !!p.is_verified,
           skill: p.category, // using category as skill
           experience: p.experience || 'N/A',
-          categories: [p.category]
+          categories: [p.category],
+          avatar: p.avatar
         }))
         setWorkers(mapped)
       } catch (error) {
@@ -76,8 +81,8 @@ export default function BrowseTalent() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[280px_1fr]">
-        <aside className="space-y-6 rounded-2xl border border-slate-100 bg-white p-4 shadow-soft">
+      <div className="mt-8 grid items-start gap-6 lg:grid-cols-[280px_1fr]">
+        <aside className="sticky top-24 z-10 space-y-6 rounded-2xl border border-slate-100 bg-white p-4 shadow-soft">
           <div className="relative">
             <input
               value={searchTerm}
@@ -172,13 +177,17 @@ export default function BrowseTalent() {
           </div>
         </aside>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <section className="grid gap-4 grid-cols-1">
           {loading ? (
             <div className="col-span-full flex justify-center py-20"><Loader2 className="animate-spin text-primary-500" size={32} /></div>
           ) : (
             <>
               {filteredWorkers.map((worker) => (
-                <WorkerCard key={worker.id} worker={worker} />
+                <WorkerCard
+                  key={worker.id}
+                  worker={worker}
+                  onBook={() => setBookingWorker(worker)}
+                />
               ))}
               {filteredWorkers.length === 0 && (
                 <div className="col-span-full rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
@@ -227,6 +236,15 @@ export default function BrowseTalent() {
           </div>
         </div>
       </div>
+
+      {/* Global Booking Modal */}
+      {bookingWorker && (
+        <BookingModal
+          worker={bookingWorker}
+          isOpen={!!bookingWorker}
+          onClose={() => setBookingWorker(null)}
+        />
+      )}
     </div>
   )
 }

@@ -6,6 +6,8 @@ import App from './App.jsx'
 
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 
+console.log("Main.jsx is running");
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary>

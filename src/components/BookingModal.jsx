@@ -20,7 +20,9 @@ export default function BookingModal({ worker, isOpen, onClose }) {
             await createBooking({
                 workerId: worker.id,
                 date: datetime,
-                description: formData.description
+                description: formData.description,
+                clientName: formData.clientName,
+                clientPhone: formData.clientPhone
             })
 
             setSuccess(true)
@@ -65,6 +67,32 @@ export default function BookingModal({ worker, isOpen, onClose }) {
                                 {worker.skill}
                             </span>
                             <p className="text-sm font-medium text-slate-700">Rate: ₹400/visit estimate</p>
+                        </div>
+
+
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold uppercase text-slate-500">Your Name</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="Enter your name"
+                                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+                                    value={formData.clientName || ''}
+                                    onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold uppercase text-slate-500">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    required
+                                    placeholder="9876543210"
+                                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+                                    value={formData.clientPhone || ''}
+                                    onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
+                                />
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">

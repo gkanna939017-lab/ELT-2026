@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, Mail, Mapda, Briefcase, Camera, Save, Loader2 } from 'lucide-react'
+import { User, Mail, MapPin, Briefcase, Camera, Save, Loader2 } from 'lucide-react'
 import Button from '../components/Button.jsx'
 import { getMyProfile, updateProfile } from '../services/api.js'
 

@@ -17,21 +17,34 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-// Create Booking
-router.post('/create', verifyToken, async (req, res) => {
+// Create Booking (Guest or User)
+router.post('/create', async (req, res) => {
     try {
-        const { workerId, description, date } = req.body;
+        const { workerId, description, date, clientName, clientPhone } = req.body;
 
         if (!workerId || !description || !date) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
+        // Optional: Verify token if header exists, else treat as guest
+        let userId = null;
+        const bearer = req.headers['authorization'];
+        if (bearer) {
+            try {
+                const token = bearer.split(" ")[1];
+                const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+                userId = decoded.id;
+            } catch (e) { }
+        }
+
         const booking = await db.booking.create({
             data: {
-                userId: req.userId,
+                userId: userId, // Can be null for guests
                 workerId: parseInt(workerId),
                 description,
-                date
+                date,
+                clientName: clientName || 'Guest Match',
+                clientPhone: clientPhone || ''
             }
         });
 
