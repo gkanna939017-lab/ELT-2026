@@ -38,22 +38,18 @@ const BIOS = {
 };
 
 const AVATARS = [
-    'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=200&q=80', // Man smiling
-    'https://images.unsplash.com/photo-1583341612074-cce5ec64f1c7?auto=format&fit=crop&w=200&q=80', // Indian man
-    'https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=200&q=80', // Beard man
-    'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&w=200&q=80', // Face map
-    'https://images.unsplash.com/photo-1489779162738-f81aed9b0b33?auto=format&fit=crop&w=200&q=80', // Scarf man
-    'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&w=200&q=80', // Glasses man
-    'https://images.unsplash.com/photo-1531123414780-f74242c2b052?auto=format&fit=crop&w=200&q=80', // Woman saree
-    'https://images.unsplash.com/photo-1627063077717-3bf75d86bda1?auto=format&fit=crop&w=200&q=80', // Farmer man
-    'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=200&q=80', // Woman
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', // Stylized
-    'https://images.unsplash.com/photo-1628157588553-5eeea00af15c?auto=format&fit=crop&w=200&q=80', // Man
-    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80', // Portrait
-    'https://images.unsplash.com/photo-1610216705422-caa3fcb6d158?auto=format&fit=crop&w=200&q=80', // Developer style
-    'https://images.unsplash.com/photo-1520635360276-79f3dbd809f6?auto=format&fit=crop&w=200&q=80', // Worker
-    'https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&w=200&q=80', // Tool holding
-    'https://images.unsplash.com/photo-1642250260424-6bd684a0d912?auto=format&fit=crop&w=200&q=80', // Rural man
+    'https://images.unsplash.com/photo-1566492031773-4f4e44671857?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW5kaWFuJTIwbWFufGVufDB8fDB8fHww', // Indian Man Beard
+    'https://images.unsplash.com/photo-1583341612074-cce5ec64f1c7?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGluZGlhbiUyMG1hbnxlbnwwfHwwfHx8MA%3D%3D', // Young Indian Man
+    'https://images.unsplash.com/photo-1628157588553-5eeea00af15c?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGluZGlhbiUyMG1hbnxlbnwwfHwwfHx8MA%3D%3D', // Smiling Man
+    'https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGluZGlhbiUyMG1hbnxlbnwwfHwwfHx8MA%3D%3D', // Elder Man
+    'https://images.unsplash.com/photo-1489779162738-f81aed9b0b33?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGluZGlhbiUyMG1hbnxlbnwwfHwwfHx8MA%3D%3D', // Scarf Man
+    'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aW5kaWFuJTIwbWFufGVufDB8fDB8fHww', // Smiling Young
+    'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aW5kaWFuJTIwd29tYW58ZW58MHx8MHx8fDA%3D', // Indian Woman
+    'https://images.unsplash.com/photo-1616241982928-119a07121087?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGluZGlhbiUyMHdvbWFufGVufDB8fDB8fHww', // Woman Saree
+    'https://images.unsplash.com/photo-1596392927818-23b420045642?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGluZGlhbiUyMHdvbWFufGVufDB8fDB8fHww', // Woman Portrait
+    'https://images.unsplash.com/photo-1627063077717-3bf75d86bda1?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aW5kaWFuJTIwZmFybWVyfGVufDB8fDB8fHww', // Farmer
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW5kaWFuJTIwcG9ydHJhaXR8ZW58MHx8MHx8fDA%3D', // Portrait
+    'https://images.unsplash.com/photo-1535295972055-1c762f4483e5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGluZGlhbiUyMHdvbWFufGVufDB8fDB8fHww' // Woman Smiling
 ];
 
 function getRandom(arr) {
@@ -86,20 +82,18 @@ function generateProfile(id) {
             experience: `${Math.floor(Math.random() * 20) + 1} years`,
             bio: BIOS[skill] || 'Hardworking professional available for local work.',
             avatar: getRandom(AVATARS),
+            rating: parseFloat((3.5 + Math.random() * 1.5).toFixed(1)), // Rating 3.5 to 5.0
             isVerified: Math.random() > 0.3, // 70% verified
             createdAt: new Date().toISOString()
         }
     };
 }
 
-// Read existing data
+// Always reset data for fresh seed
 let data = { User: [], WorkerProfile: [], Booking: [] };
-if (fs.existsSync(DATA_FILE)) {
-    data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-}
 
 // Determine starting ID
-const startId = (data.User.length > 0 ? Math.max(...data.User.map(u => u.id)) : 0) + 1;
+const startId = 1;
 const COUNT = 1000;
 
 console.log(`Generating ${COUNT} profiles starting from ID ${startId}...`);

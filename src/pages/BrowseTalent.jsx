@@ -37,12 +37,13 @@ export default function BrowseTalent() {
           name: p.user?.name || 'Unknown',
           role: p.category,
           location: p.location,
-          rating: 5.0, // Default for now
+          rating: p.rating || 4.8,
           verified: !!p.is_verified,
           skill: p.category, // using category as skill
           experience: p.experience || 'N/A',
           categories: [p.category],
-          avatar: p.avatar
+          avatar: p.avatar,
+          phone: p.user?.phoneNumber
         }))
         setWorkers(mapped)
       } catch (error) {

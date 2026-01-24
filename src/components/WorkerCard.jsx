@@ -85,7 +85,7 @@ export default function WorkerCard({ worker, onBook }) {
             className="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
             onClick={(e) => e.stopPropagation()}
           >
-            <Phone size={16} /> Contact
+            <Phone size={16} /> Call Now
           </a>
         )}
       </div>
