@@ -22,6 +22,7 @@ const features = [
     description: 'Filter by category and location to connect with the right worker quickly.',
   },
   {
+
     icon: TrendingUp,
     title: 'Upskilling Support',
     description: 'Access curated training to help local talent grow and certify their skills.',
