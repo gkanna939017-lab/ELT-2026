@@ -5,6 +5,7 @@ import WorkerCard from '../components/WorkerCard.jsx'
 import MapPreview from '../components/MapPreview.jsx'
 import BookingModal from '../components/BookingModal.jsx'
 import { searchProfiles } from '../services/api.js'
+import { workers as mockWorkers } from '../data/mockData.js'
 
 const categories = ['All', 'Home Services', 'Electrical', 'Technology', 'Freelance', 'Fashion', 'Artisan', 'Construction']
 const locations = ['All', 'Narasaraopet', 'Guntur', 'Chilakaluripet', 'Sattenapalle', 'Macherla', 'Piduguralla']
@@ -48,6 +49,13 @@ export default function BrowseTalent() {
         setWorkers(mapped)
       } catch (error) {
         console.error("Failed to fetch workers", error)
+        // Fallback to mock data for demo/when backend is offline
+        const fallback = mockWorkers.map(w => ({
+          ...w,
+          role: w.skill,
+          verified: true
+        }))
+        setWorkers(fallback)
       } finally {
         setLoading(false)
       }
